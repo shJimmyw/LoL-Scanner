@@ -1,0 +1,44 @@
+#champion-listing{
+    text-align: center;
+}
+.champ_card{
+    margin-right: 24px;
+}
+
+#search_container{
+    text-align: center;
+}
+#search_icon{
+    color:darkgray;
+    font-size: 25px;
+    margin-right: 4px;
+}
+#search{
+    padding: 7px 10px;
+    font-size:22px;
+    width: 24%;
+}
+#search:focus{
+    border: 3px solid #555;
+}
+#randomize{
+    background:orange;
+    display:inline-block;
+    border:none;
+    color:white;
+    width:9%;
+    margin-top:8px;
+    padding: 5px;
+    font-size: 19px;
+}
+#clear{
+    background:orange;
+    display:inline-block;
+    border:none;
+    color:white;
+    width:9%;
+    margin-top:8px;
+    padding: 5px;
+    font-size: 19px;
+}
+
