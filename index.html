@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LoL Scanner</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="index_style.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://use.fontawesome.com/9704e08296.js"></script>
+    </head>
+    <body>
+        <script>/*
+            var key;
+            $(document).ready(function(){
+                $.ajax({
+                   type: "GET" ,
+                   url: "resources/api.xml" ,
+                   dataType: "xml" ,
+                   async:false,
+                   success: function(xml) {
+                         key = $(xml).find('key').text();
+                   }
+                });
+            });*/
+            var champions;
+            window.onload = function(){               
+                $(document).ready(function(){
+                   $.ajax({
+                     url: 'http://ddragon.leagueoflegends.com/cdn/5.23.1/data/en_US/champion.json',
+                     type: 'GET',
+                     dataType: 'json',
+                     success: function (champions) {
+                        champions = Object.keys(champions.data);
+                        alert('gi');
+                        insert();
+                     }
+                   });
+                });
+            };
+            function insert(){
+                $.ajax({
+                   type:"POST",
+                   url: "DBSearch.php",
+                   dataType: 'json',
+                   data: {champions: JSON.stringify(champions)},
+                   success: function(l) {
+                       alert('loaded');
+                   }
+                });  
+            };
+           
+           var listOfChamps = [];
+           var cards = [0, 0, 0 ,0 , 0, 0, 0];
+           $(document).on('click',"#randomize", function(){
+              alert(Math.floor((Math.random() * 7))); 
+           });
+           $(document).on('click',"#clear",function(){
+              for(i = 0; i < 7; i++){
+                  reset(i);
+              } 
+              listOfChamps = ["","","","","","",""];
+           });
+           function reset(imagecard){
+               document.getElementById("champ_card" + imagecard).src = "Resources/Random.jpg";
+               cards[imagecard] = 0;
+               listOfChamps[imagecard] = "";
+           }
+           function sanitizeInput(champName){
+               if(champName.indexOf(" ") !== -1){
+                   champName = champName.replace(/\s/g, "");
+               }
+               if (champName.indexOf("'") !== -1){
+                   champName = champName.replace("'", "");
+               }
+               if (champName.indexOf(".") !== -1){
+                   champName = champName.replace(".", "");
+               }
+               if(champName === "Reksai"){
+                   champName = "RekSai";
+               } else if (champName === "ChoGath"){
+                   champName = "Chogath";
+               } else if (champName === "Kogmaw"){
+                   champName = "KogMaw";
+               } else if (champName === "VelKoz"){
+                   champName = "Velkoz";
+               } else if (champName === "KhaZix"){
+                   champName = "Khazix";
+               } else if (champName === "LeBlanc"){
+                   champName = "Leblanc";
+               }
+               return champName;
+           }
+           function submitChampName(){
+               var champName = document.getElementById("search").value;
+               document.getElementById("search").value = "";
+               champName = sanitizeInput(champName);
+               if(champName === "WuKong" || champName === "Wukong"){
+                   champName = "MonkeyKing";
+               }
+               for(i = 0; i < 7; i++){
+                   if(cards[i] == 0 && ( $.inArray(champName, listOfChamps) == -1)){
+                        $("#champ_card" + i).hide();
+                        document.getElementById("champ_card" + i).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+
+                        champName + "_0.jpg"
+                        listOfChamps[i] = champName;
+                        cards[i] = 1;
+                        $("#champ_card" + i).fadeIn();
+                        return;
+                    } 
+               }
+           }
+        </script>
+        <br><br><br><br><br>
+        <div id="champion-listing">
+            <img id="champ_card0" class="champ_card" src="Resources/Random.jpg" width="184" height="335" alt="champion" onclick="reset(0)">
+            <img id="champ_card1" class="champ_card" src="Resources/Random.jpg" width="184" height="335" alt="champion" onclick="reset(1)">
+            <img id="champ_card2" class="champ_card" src="Resources/Random.jpg" width="184" height="335" alt="champion" onclick="reset(2)">
+            <img id="champ_card3" class="champ_card" src="Resources/Random.jpg" width="184" height="335" alt="champion" onclick="reset(3)">
+            <img id="champ_card4" class="champ_card" src="Resources/Random.jpg" width="184" height="335" alt="champion" onclick="reset(4)">
+            <img id="champ_card5" class="champ_card" src="Resources/Random.jpg" width="184" height="335" alt="champion" onclick="reset(5)">
+            <img id="champ_card6" class="champ_card" src="Resources/Random.jpg" width="184" height="335" alt="champion" onclick="reset(6)">
+       </div>
+        <br><br>
+        <div id="search_container">
+            <i id="search_icon" class="fa fa-search-plus" aria-hidden="true"></i>
+            <input id="search" type="text" name="search" placeholder="Champion Name" required onkeydown = "if (event.keyCode == 13) submitChampName()">  
+            <div id="search_text"></div>
+            <button id="randomize" type="button" >Randomize</button>
+            <button id="clear" type="button" >Clear</button>
+        </div>
+    </body>
+</html>
